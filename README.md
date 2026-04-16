@@ -1,29 +1,51 @@
 # 🧱 DevOps Homelab Infrastructure
 
-## Overview
-Self-hosted environment using Docker and Kubernetes.
+## 📌 Overview
+
+Production-like self-hosted infrastructure running multiple services using Docker.
 
 ---
 
-## What I built
+## 🏗️ Architecture
 
-- Multi-service setup using Docker
-- Kubernetes-based deployments
-- Secure access using Cloudflare Tunnel
-- Private networking using NetBird (WireGuard)
+### Core Applications
+- Nextcloud (3-instance cluster)
+- PostgreSQL databases
+- Redis caching
+- Nginx load balancer
+
+### Observability Stack
+- Prometheus (metrics collection)
+- Grafana (dashboards)
+- Alertmanager (alerting)
+- Loki + Promtail (logging)
+- Tempo (distributed tracing)
+- Node Exporter + cAdvisor (system metrics)
+- Blackbox exporter (endpoint monitoring)
+
+### Networking & Access
+- Tailscale (private VPN access)
+- Reverse proxy (Nginx)
+
+### Additional Services
+- Plex media server
+- Uptime Kuma (service monitoring)
+- Watchtower (auto container updates)
+- Custom ERP system
 
 ---
 
-## Why this matters
+## 🔥 Key Highlights
 
-This simulates real-world DevOps infrastructure:
-- Service orchestration
-- Secure exposure
-- Networking control
+- Managed 20+ running containers
+- Built full observability pipeline (metrics + logs + traces)
+- Implemented service monitoring and alerting
+- Designed multi-service architecture with secure access
+- Automated container updates using Watchtower
 
 ---
 
-## Next Steps
+## 🚀 Example Services
 
-- Add CI/CD
-- Add monitoring integration
+```bash
+docker ps
