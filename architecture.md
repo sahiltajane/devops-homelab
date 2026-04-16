@@ -1,17 +1,13 @@
-# 🏗️ Homelab Architecture (Production + DNS Accurate)
-
-```mermaid
 flowchart TD
 
 %% =========================
 %% INTERNET + DNS
 %% =========================
 USER[Users] --> DNS[Cloudflare DNS]
-
 DNS --> CF[Cloudflare Tunnel]
 
 %% =========================
-%% INGRESS ROUTING
+%% DOMAIN ROUTING
 %% =========================
 CF --> NC_DOMAIN[cloud.tsginfotech.co.in]
 CF --> ERP_DOMAIN[report.tsginfotech.co.in]
@@ -20,18 +16,18 @@ CF --> GRAF_DOMAIN[dash.tsginfotech.co.in]
 CF --> PLEX_DOMAIN[plex.tsginfotech.co.in]
 
 %% =========================
-%% LOCAL SERVICES (PORT BASED)
+%% LOCAL SERVICES
 %% =========================
-NC_DOMAIN --> LB[Nginx LB :8080]
-ERP_DOMAIN --> ERP[ERP App :8900]
-STATUS_DOMAIN --> UP[Uptime Kuma :3001]
-GRAF_DOMAIN --> GRAF[Grafana :3000]
-PLEX_DOMAIN --> PLEX[Plex :32400]
+NC_DOMAIN --> LB[Nginx Load Balancer 8080]
+ERP_DOMAIN --> ERP[ERP App 8900]
+STATUS_DOMAIN --> UP[Uptime Kuma 3001]
+GRAF_DOMAIN --> GRAF[Grafana 3000]
+PLEX_DOMAIN --> PLEX[Plex 32400]
 
 %% =========================
-%% NEXTCLOUD NETWORK
+%% NEXTCLOUD STACK
 %% =========================
-subgraph nextcloud_default
+subgraph nextcloud_network
 
 LB --> NC1[Nextcloud App 1]
 LB --> NC2[Nextcloud App 2]
@@ -45,22 +41,22 @@ NC1 --> REDIS[(Redis)]
 NC2 --> REDIS
 NC3 --> REDIS
 
-COL[Collabora :9980] --> NC1
+COL[Collabora 9980] --> NC1
 COL --> NC2
 COL --> NC3
 
 end
 
 %% =========================
-%% MONITORING NETWORK
+%% MONITORING STACK
 %% =========================
-subgraph monitoring_default
+subgraph monitoring_network
 
 PROM[Prometheus]
 
 NODE[Node Exporter]
 CAD[cAdvisor]
-BB[Blackbox]
+BB[Blackbox Exporter]
 
 NODE --> PROM
 CAD --> PROM
@@ -69,19 +65,19 @@ BB --> PROM
 PROM --> GRAF
 PROM --> ALERT[Alertmanager]
 
-PROMTAIL --> LOKI
+PROMTAIL[Promtail] --> LOKI[Loki]
 LOKI --> GRAF
 
-TEMPO --> GRAF
+TEMPO[Tempo] --> GRAF
 
-PUSH --> PROM
+PUSH[Pushgateway] --> PROM
 
 end
 
 %% =========================
-%% ERP NETWORK
+%% ERP STACK
 %% =========================
-subgraph test_default
+subgraph erp_network
 
 ERP --> ERPDB[(Postgres)]
 
