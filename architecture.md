@@ -1,52 +1,103 @@
-# 🏗️ Homelab Architecture
+# 🏗️ Homelab Architecture (Production + DNS Accurate)
 
 ```mermaid
-graph TD
+flowchart TD
 
-%% External Access
-A[Internet] --> B[Cloudflare Tunnel]
+%% =========================
+%% INTERNET + DNS
+%% =========================
+USER[Users] --> DNS[Cloudflare DNS]
 
-%% Nextcloud via Nginx LB
-B --> C[Nginx Load Balancer]
-C --> D1[Nextcloud App 1]
-C --> D2[Nextcloud App 2]
-C --> D3[Nextcloud App 3]
+DNS --> CF[Cloudflare Tunnel]
 
-D1 --> E[(PostgreSQL)]
-D2 --> E
-D3 --> E
+%% =========================
+%% INGRESS ROUTING
+%% =========================
+CF --> NC_DOMAIN[cloud.tsginfotech.co.in]
+CF --> ERP_DOMAIN[report.tsginfotech.co.in]
+CF --> STATUS_DOMAIN[status.tsginfotech.co.in]
+CF --> GRAF_DOMAIN[dash.tsginfotech.co.in]
+CF --> PLEX_DOMAIN[plex.tsginfotech.co.in]
 
-D1 --> F[(Redis)]
-D2 --> F
-D3 --> F
+%% =========================
+%% LOCAL SERVICES (PORT BASED)
+%% =========================
+NC_DOMAIN --> LB[Nginx LB :8080]
+ERP_DOMAIN --> ERP[ERP App :8900]
+STATUS_DOMAIN --> UP[Uptime Kuma :3001]
+GRAF_DOMAIN --> GRAF[Grafana :3000]
+PLEX_DOMAIN --> PLEX[Plex :32400]
 
-%% Other Services (Direct via Tunnel)
-B --> G[Grafana]
-B --> H[Prometheus]
-B --> I[Uptime Kuma]
-B --> J[ERP App]
+%% =========================
+%% NEXTCLOUD NETWORK
+%% =========================
+subgraph nextcloud_default
 
-%% Monitoring Stack
-H --> G
-H --> K[Alertmanager]
+LB --> NC1[Nextcloud App 1]
+LB --> NC2[Nextcloud App 2]
+LB --> NC3[Nextcloud App 3]
 
-L[Node Exporter] --> H
-M[cAdvisor] --> H
-N[Blackbox Exporter] --> H
+NC1 --> DB[(Postgres)]
+NC2 --> DB
+NC3 --> DB
 
-O[Promtail] --> P[Loki]
-P --> G
+NC1 --> REDIS[(Redis)]
+NC2 --> REDIS
+NC3 --> REDIS
 
-Q[Tempo] --> G
+COL[Collabora :9980] --> NC1
+COL --> NC2
+COL --> NC3
 
-%% Private Network (Tailscale)
-R[Tailscale VPN] --> D1
-R --> D2
-R --> D3
-R --> G
-R --> H
-R --> J
+end
 
-%% Backup Servers
-R --> S[Backup Server 1]
-R --> T[Backup Server 2]
+%% =========================
+%% MONITORING NETWORK
+%% =========================
+subgraph monitoring_default
+
+PROM[Prometheus]
+
+NODE[Node Exporter]
+CAD[cAdvisor]
+BB[Blackbox]
+
+NODE --> PROM
+CAD --> PROM
+BB --> PROM
+
+PROM --> GRAF
+PROM --> ALERT[Alertmanager]
+
+PROMTAIL --> LOKI
+LOKI --> GRAF
+
+TEMPO --> GRAF
+
+PUSH --> PROM
+
+end
+
+%% =========================
+%% ERP NETWORK
+%% =========================
+subgraph test_default
+
+ERP --> ERPDB[(Postgres)]
+
+end
+
+%% =========================
+%% PRIVATE NETWORK
+%% =========================
+TS[Tailscale VPN]
+
+TS --> NC1
+TS --> NC2
+TS --> NC3
+TS --> DB
+TS --> GRAF
+TS --> ERP
+
+TS --> B1[Backup Server 1]
+TS --> B2[Backup Server 2]
