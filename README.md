@@ -45,6 +45,36 @@ Production-like self-hosted infrastructure running multiple services using Docke
 
 ---
 
+## 📦 Running Services (Live Stack)
+
+Current infrastructure runs 20+ containers including:
+
+### 🧱 Core Applications
+- Nextcloud cluster (3 instances + Nginx load balancer)
+- PostgreSQL databases
+- Redis cache
+- Collabora (document editing)
+
+### 📊 Observability Stack
+- Prometheus
+- Grafana
+- Alertmanager
+- Loki + Promtail
+- Tempo (tracing)
+- Node Exporter, cAdvisor, Blackbox Exporter
+
+### 🌐 Access & Networking
+- Cloudflare Tunnel (Zero Trust ingress)
+- Tailscale (private VPN network)
+
+### 🧰 Additional Services
+- Uptime Kuma (status monitoring)
+- Watchtower (auto updates)
+- Plex (media server)
+- Custom ERP system
+
+---
+
 ## 🚀 Example Services
 
 ```bash
