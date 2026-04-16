@@ -4,38 +4,49 @@
 graph TD
 
 %% External Access
-A[Internet] --> B[Nginx Reverse Proxy]
+A[Internet] --> B[Cloudflare Tunnel]
 
-%% Core Apps
-B --> C1[Nextcloud App 1]
-B --> C2[Nextcloud App 2]
-B --> C3[Nextcloud App 3]
+%% Nextcloud via Nginx LB
+B --> C[Nginx Load Balancer]
+C --> D1[Nextcloud App 1]
+C --> D2[Nextcloud App 2]
+C --> D3[Nextcloud App 3]
 
-C1 --> D[(PostgreSQL)]
-C2 --> D
-C3 --> D
+D1 --> E[(PostgreSQL)]
+D2 --> E
+D3 --> E
 
-C1 --> E[(Redis)]
-C2 --> E
-C3 --> E
+D1 --> F[(Redis)]
+D2 --> F
+D3 --> F
+
+%% Other Services (Direct via Tunnel)
+B --> G[Grafana]
+B --> H[Prometheus]
+B --> I[Uptime Kuma]
+B --> J[ERP App]
 
 %% Monitoring Stack
-F[Prometheus] --> G[Grafana]
-F --> H[Alertmanager]
+H --> G
+H --> K[Alertmanager]
 
-I[Node Exporter] --> F
-J[cAdvisor] --> F
-K[Blackbox Exporter] --> F
+L[Node Exporter] --> H
+M[cAdvisor] --> H
+N[Blackbox Exporter] --> H
 
-L[Promtail] --> M[Loki]
-M --> G
+O[Promtail] --> P[Loki]
+P --> G
 
-N[Tempo] --> G
+Q[Tempo] --> G
 
-%% Extra Services
-O[Plex] --> B
-P[ERP App] --> B
-Q[Uptime Kuma] --> B
+%% Private Network (Tailscale)
+R[Tailscale VPN] --> D1
+R --> D2
+R --> D3
+R --> G
+R --> H
+R --> J
 
-%% Networking
-R[Tailscale VPN] --> B
+%% Backup Servers
+R --> S[Backup Server 1]
+R --> T[Backup Server 2]
