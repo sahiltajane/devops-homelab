@@ -160,7 +160,30 @@ https://github.com/yourusername/backup-system
 ## 📦 Running Services
 
 ```bash
-docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.Networks}}"
+NAMES                   IMAGE                                  PORTS                                                                                      NETWORKS
+nextcloud-nginx-lb-1    nginx:stable-alpine                    0.0.0.0:8080->80/tcp, [::]:8080->80/tcp                                                    nextcloud_default
+tempo                   grafana/tempo:latest                   0.0.0.0:3200->3200/tcp, [::]:3200->3200/tcp, 0.0.0.0:4317->4317/tcp, [::]:4317->4317/tcp   monitoring_default
+grafana                 grafana/grafana:latest                 0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp                                                monitoring_default
+prometheus              prom/prometheus:latest                 0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp                                                monitoring_default
+nextcloud-app-1         nextcloud:33                           80/tcp                                                                                     nextcloud_default,nginx-proxy-manager_default
+nextcloud-app-2         nextcloud:33                           80/tcp                                                                                     nextcloud_default,nginx-proxy-manager_default
+nextcloud-app-3         nextcloud:33                           80/tcp                                                                                     nextcloud_default,nginx-proxy-manager_default
+plex                    plexinc/pms-docker:latest                                                                                                         host
+alertmanager            prom/alertmanager:latest               0.0.0.0:9093->9093/tcp, [::]:9093->9093/tcp                                                monitoring_default
+uptime-kuma             louislam/uptime-kuma                   0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp                                                monitoring_default
+pushgateway             prom/pushgateway                       0.0.0.0:9091->9091/tcp, [::]:9091->9091/tcp                                                monitoring_default
+promtail                grafana/promtail:latest                                                                                                           monitoring_default
+blackbox                prom/blackbox-exporter                 0.0.0.0:9115->9115/tcp, [::]:9115->9115/tcp                                                monitoring_default
+cadvisor                gcr.io/cadvisor/cadvisor:latest        0.0.0.0:8088->8080/tcp, [::]:8088->8080/tcp                                                monitoring_default
+loki                    grafana/loki:latest                    0.0.0.0:3100->3100/tcp, [::]:3100->3100/tcp                                                monitoring_default
+node-exporter           prom/node-exporter                     0.0.0.0:9100->9100/tcp, [::]:9100->9100/tcp                                                monitoring_default
+tailscale               tailscale/tailscale:latest                                                                                                        host
+nextcloud-db-1          postgres:16                            5432/tcp                                                                                   nextcloud_default
+reporting_db            postgres:15                            5432/tcp                                                                                   test_default
+nextcloud-redis-1       redis:7                                6379/tcp                                                                                   nextcloud_default
+nextcloud-collabora-1   collabora/code                         0.0.0.0:9980->9980/tcp, [::]:9980->9980/tcp                                                nextcloud_default
+watchtower              containrrr/watchtower                  8080/tcp                                                                                   watchtower_default
+reporting_app           tsgdevelopments/reporting_erp:latest   0.0.0.0:8900->8900/tcp, [::]:8900->8900/tcp                                                nginx-proxy-manager_default,test_default
 ```
 
 Includes:
