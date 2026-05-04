@@ -10,7 +10,7 @@ This setup focuses on **observability, secure access, service isolation, and rel
 
 ## 🏗️ Architecture
 
-👉 Detailed diagram: [View Full Architecture](./architecture/architecture.md)
+👉 Detailed diagram: [View Full Architecture](./architecture.md)
 
 ### 🔁 High-Level Flow
 
