@@ -9,20 +9,20 @@ DNS --> CF[Cloudflare Tunnel]
 %% =========================
 %% DOMAIN ROUTING
 %% =========================
-CF --> NC_DOMAIN[cloud.tsginfotech.co.in]
-CF --> ERP_DOMAIN[report.tsginfotech.co.in]
-CF --> STATUS_DOMAIN[status.tsginfotech.co.in]
-CF --> GRAF_DOMAIN[dash.tsginfotech.co.in]
-CF --> PLEX_DOMAIN[plex.tsginfotech.co.in]
+CF --> NC_DOMAIN[Nextcloud Domain]
+CF --> ERP_DOMAIN[ERP Domain]
+CF --> STATUS_DOMAIN[Status Domain]
+CF --> GRAF_DOMAIN[Grafana Domain]
+CF --> PLEX_DOMAIN[Plex Domain]
 
 %% =========================
 %% LOCAL SERVICES
 %% =========================
-NC_DOMAIN --> LB[Nginx Load Balancer 8080]
-ERP_DOMAIN --> ERP[ERP App 8900]
-STATUS_DOMAIN --> UP[Uptime Kuma 3001]
-GRAF_DOMAIN --> GRAF[Grafana 3000]
-PLEX_DOMAIN --> PLEX[Plex 32400]
+NC_DOMAIN --> LB[Nginx Load Balancer]
+ERP_DOMAIN --> ERP[ERP App]
+STATUS_DOMAIN --> UP[Uptime Kuma]
+GRAF_DOMAIN --> GRAF[Grafana]
+PLEX_DOMAIN --> PLEX[Plex]
 
 %% =========================
 %% NEXTCLOUD STACK
@@ -33,15 +33,15 @@ LB --> NC1[Nextcloud App 1]
 LB --> NC2[Nextcloud App 2]
 LB --> NC3[Nextcloud App 3]
 
-NC1 --> DB[(Postgres)]
+NC1 --> DB[Postgres DB]
 NC2 --> DB
 NC3 --> DB
 
-NC1 --> REDIS[(Redis)]
+NC1 --> REDIS[Redis]
 NC2 --> REDIS
 NC3 --> REDIS
 
-COL[Collabora 9980] --> NC1
+COL[Collabora] --> NC1
 COL --> NC2
 COL --> NC3
 
@@ -54,13 +54,9 @@ subgraph monitoring_network
 
 PROM[Prometheus]
 
-NODE[Node Exporter]
-CAD[cAdvisor]
-BB[Blackbox Exporter]
-
-NODE --> PROM
-CAD --> PROM
-BB --> PROM
+NODE[Node Exporter] --> PROM
+CAD[cAdvisor] --> PROM
+BB[Blackbox Exporter] --> PROM
 
 PROM --> GRAF
 PROM --> ALERT[Alertmanager]
@@ -69,7 +65,6 @@ PROMTAIL[Promtail] --> LOKI[Loki]
 LOKI --> GRAF
 
 TEMPO[Tempo] --> GRAF
-
 PUSH[Pushgateway] --> PROM
 
 end
@@ -79,7 +74,7 @@ end
 %% =========================
 subgraph erp_network
 
-ERP --> ERPDB[(Postgres)]
+ERP --> ERPDB[Postgres DB]
 
 end
 
